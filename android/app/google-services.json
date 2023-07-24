@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "265921138811",
+    "project_id": "jagvault-5604b",
+    "storage_bucket": "jagvault-5604b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265921138811:android:157c08c8105f0ba4bcd2de",
+        "android_client_info": {
+          "package_name": "com.example.jagvault"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265921138811-6olnj55olupntcc7s3qmtv7co6kkm69r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAagfxFC5w6TDvEV57U_1suAiCMqtoA7CE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265921138811-6olnj55olupntcc7s3qmtv7co6kkm69r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
