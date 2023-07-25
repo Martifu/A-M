@@ -107,12 +107,12 @@ class CartasScreen extends StatelessWidget {
                       border: Border.fromBorderSide(
                           BorderSide(color: secondaryColor, width: 2)),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 10),
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text("escribir carta",
                               style: TextStyle(
                                   fontFamily: 'visby',

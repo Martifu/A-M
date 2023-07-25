@@ -33,7 +33,7 @@ class NuevaCarta extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'nueva carta',
+              'nueva',
               style: TextStyle(
                   fontFamily: 'visby',
                   fontSize: 36,
@@ -54,6 +54,10 @@ class NuevaCarta extends StatelessWidget {
             ),
             TextFormField(
               controller: titleController,
+              style: const TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 16,
+              ),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'título',
@@ -109,12 +113,12 @@ class NuevaCarta extends StatelessWidget {
                       border: Border.fromBorderSide(
                           BorderSide(color: Colors.black, width: 2)),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 10),
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text("guardar",
                               style: TextStyle(
                                   fontFamily: 'visby',

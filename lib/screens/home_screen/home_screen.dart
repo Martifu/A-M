@@ -6,6 +6,7 @@ import 'package:jagvault/constants.dart';
 import 'package:jagvault/models/carta.dart';
 import 'package:jagvault/screens/cartas/leer_carta.dart';
 import 'package:jagvault/screens/home_screen/provider.dart';
+import 'package:jagvault/screens/recuerdos/recuerdos_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../cartas/cartas_screen.dart';
@@ -86,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                       fontFamily: 'visby')),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                  return const CartasScreen();
+                  return const RecuerdosScreen();
                 }));
               },
             ),
@@ -154,9 +155,16 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              const TituloWidget(
-                titulo: 'recuerdos',
-                opcion: 'ver todos',
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                    return const RecuerdosScreen();
+                  }));
+                },
+                child: const TituloWidget(
+                  titulo: 'recuerdos',
+                  opcion: 'ver todos',
+                ),
               ),
               const SizedBox(
                 height: 10,
