@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:jagvault/constants.dart';
+import 'package:jagvault/models/carta.dart';
+import 'package:jagvault/screens/cartas/leer_carta.dart';
 import 'package:jagvault/screens/home_screen/provider.dart';
 import 'package:provider/provider.dart';
+
+import '../cartas/cartas_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen._();
@@ -23,27 +28,82 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       drawer: Drawer(
+        backgroundColor: backgroundColor,
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: const BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage(
+                              'assets/img/landscape.jpg',
+                            ))),
+                    child: const Center(
+                        child: Text(
+                      '13 . 07 . 2023',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                      ),
+                    )),
+                  )),
             ),
             ListTile(
-              title: const Text('Item 1'),
+              leading: const Icon(
+                HeroIcons.envelope,
+                color: secondaryColor,
+              ),
+              title: const Text('cartas',
+                  style: TextStyle(
+                      color: secondaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'visby')),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return const CartasScreen();
+                }));
               },
             ),
             ListTile(
-              title: const Text('Item 2'),
+              leading: const Icon(
+                HeroIcons.heart,
+                color: secondaryColor,
+              ),
+              title: const Text('recuerdos',
+                  style: TextStyle(
+                      color: secondaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'visby')),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return const CartasScreen();
+                }));
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                HeroIcons.users,
+                color: secondaryColor,
+              ),
+              title: const Text('cosas por hacer',
+                  style: TextStyle(
+                      color: secondaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'visby')),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return const CartasScreen();
+                }));
               },
             ),
           ],
@@ -90,27 +150,6 @@ class HomeScreen extends StatelessWidget {
                   //oblique
                   fontStyle: FontStyle.italic,
                 ),
-              ),
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('martin')
-                    .doc('notas')
-                    .collection('own')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Text('Error al obtener los datos');
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
-
-                  // Los datos fueron obtenidos correctamente
-                  final data = snapshot.data;
-                  print(data!.docs[0]['titulo']);
-                  return Text(data.docs[0]['titulo']);
-                },
               ),
               const SizedBox(
                 height: 20,
@@ -241,24 +280,80 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 40,
               ),
-              const TituloWidget(
-                titulo: 'últimas cartas',
-                opcion: 'mis cartas',
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                    return const CartasScreen();
+                  }));
+                },
+                child: const TituloWidget(
+                  titulo: 'últimas cartas',
+                  opcion: 'mis cartas',
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              const WidgetCarta(),
-              const SizedBox(
-                height: 10,
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('m&a')
+                    .doc('martin')
+                    .collection('letters')
+                    .orderBy('date', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Error al obtener los datos');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CupertinoActivityIndicator());
+                  }
+                  //get index
+                  // final data = snapshot.data;
+
+                  // Los datos fueron obtenidos correctamente
+
+                  //get length
+                  final length = snapshot.data!.docs.length;
+
+                  //show the last 2 letters
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: length > 1 ? 2 : 1,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) {
+                                return const LeerCarta();
+                              },
+                              settings: RouteSettings(
+                                  arguments: Carta.fromDocumentSnapshot(
+                                      snapshot.data!.docs[index]))));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: WidgetCarta(
+                            carta: Carta.fromDocumentSnapshot(
+                                snapshot.data!.docs[index]),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-              const WidgetCarta(),
               const SizedBox(
                 height: 20,
               ),
-              const TituloWidget(
-                titulo: 'cosas por hacer',
-                opcion: 'ver todas',
+              GestureDetector(
+                onTap: () {},
+                child: const TituloWidget(
+                  titulo: 'cosas por hacer',
+                  opcion: 'ver todas',
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -282,8 +377,9 @@ class HomeScreen extends StatelessWidget {
 class WidgetCarta extends StatelessWidget {
   const WidgetCarta({
     super.key,
+    required this.carta,
   });
-
+  final Carta carta;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -291,10 +387,10 @@ class WidgetCarta extends StatelessWidget {
         color: secondaryColor.withOpacity(.06),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: const Padding(
-        padding: EdgeInsets.only(bottom: 5),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 5),
         child: ListTile(
-          leading: Padding(
+          leading: const Padding(
             padding: EdgeInsets.only(top: 5),
             child: Icon(
               HeroIcons.bookmark,
@@ -302,21 +398,27 @@ class WidgetCarta extends StatelessWidget {
             ),
           ),
           title: Text(
-            'título de la carta',
-            style: TextStyle(
+            '${carta.title}',
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
               color: primaryColor,
             ),
           ),
           subtitle: Text(
-            '12 de Julio de 2023',
-            style: TextStyle(fontSize: 12, color: pinkColor),
+            formatDate(carta.date!),
+            style: const TextStyle(
+                fontSize: 12, color: pinkColor, fontWeight: FontWeight.w600),
           ),
         ),
       ),
     );
   }
+}
+
+formatDate(Timestamp date) {
+  DateTime dateTime = date.toDate();
+  return '${dateTime.day} de ${dateTime.month} del ${dateTime.year}';
 }
 
 class TituloWidget extends StatelessWidget {

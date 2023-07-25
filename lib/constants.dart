@@ -11,6 +11,7 @@ TextStyle customTextStyle = const TextStyle(
 const Color primaryColor = Color(0xff12043E);
 const Color secondaryColor = Color(0xff410ED3);
 const Color pinkColor = Color(0xffD24F6B);
+const Color backgroundColor = Color(0xffF2EDE6);
 
 ThemeData appTheme() {
   return ThemeData(
