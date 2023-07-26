@@ -69,12 +69,15 @@ class RecuerdosScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(15.0),
                               child: Stack(
                                 children: [
-                                  Image.asset("assets/img/carta.png"),
+                                  Image.network(
+                                    carta.get('url')!,
+                                    height: size.height * 0.2,
+                                  ),
                                   Center(
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           right: 15, left: 5),
-                                      child: Text(carta.get('title')!,
+                                      child: Text(carta.get('url')!,
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                               fontFamily: 'visby',

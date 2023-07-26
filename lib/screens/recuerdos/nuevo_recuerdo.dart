@@ -1,59 +1,112 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
+// ignore: must_be_immutable
 class NuevoRecuerdo extends StatelessWidget {
   NuevoRecuerdo({super.key});
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  String imageFile = ''; // Variable to hold the selected image file
+  Uint8List? selectedImageInBytes;
+
+  // Method to pick image in flutter web
+  Future<void> pickImage(BuildContext context) async {
+    try {
+      // Pick image using file_picker package
+      FilePickerResult? fileResult = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+      );
+
+      // If user picks an image, save selected image to variable
+      if (fileResult != null) {
+        imageFile = fileResult.files.first.name;
+        selectedImageInBytes = fileResult.files.first.bytes;
+        //randomAlphaNumeric(9)
+        var rnm = DateTime.now().millisecondsSinceEpoch.toString();
+        await uploadImage(selectedImageInBytes!, titleController.text + rnm)
+            .then((value) {
+          log(value);
+          firestore.collection('m&a').doc('both').collection('memories').add({
+            'title': titleController.text,
+            'description': contentController.text,
+            'url': value,
+            'date': DateTime.now(),
+            'createdBy': 'martin',
+            'type': 'photo',
+          });
+        });
+      }
+    } catch (e) {
+      // If an error occured, show SnackBar with error message
+      log(e.toString());
+    }
+  }
+
+  // Method to upload selected image in flutter web
+  // This method will get selected image in Bytes
+  Future<String> uploadImage(
+      Uint8List selectedImageInBytes, String titulo) async {
+    try {
+      // This is referance where image uploaded in firebase storage bucket
+      Reference ref = FirebaseStorage.instance.ref().child(titulo);
+
+      // metadata to save image extension
+      final metadata = SettableMetadata(contentType: 'image/jpeg');
+
+      // UploadTask to finally upload image
+      UploadTask uploadTask = ref.putData(selectedImageInBytes, metadata);
+
+      // After successfully upload show SnackBar
+      await uploadTask.whenComplete(() {
+        log('Image Uploaded');
+      });
+      return await ref.getDownloadURL();
+    } catch (e) {
+      log(e.toString());
+    }
+    return '';
+  }
 
   // Función para seleccionar una foto de la galería
   Future<String> pickImageFromGallery(BuildContext context) async {
     // Seleccionar la foto
     //print which platform is running
     if (kIsWeb) {
-      //do something else
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-      if (image != null) {
-        var url = await uploadPhotoToStorage(image.path);
-        print(url);
-        firestore.collection('m&a').doc('both').collection('memories').add({
-          'title': 'foto',
-          'description': 'descripción de la foto',
-          'url': url,
-          'date': DateTime.now(),
-          'createdBy': 'martin',
-          'type': 'photo',
-        }).then((value) => Navigator.pop(context));
-      }
+      var url = await uploadPhotoToStorage('');
+      print(url);
+      firestore.collection('m&a').doc('both').collection('memories').add({
+        'title': 'foto',
+        'description': 'descripción de la foto',
+        'url': url,
+        'date': DateTime.now(),
+        'createdBy': 'martin',
+        'type': 'photo',
+      }).then((value) => Navigator.pop(context));
     } else {
       //do something else
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-      if (image != null) {
-        var url = await uploadPhotoToStorage(image.path);
-        print(url);
+      var url = await uploadPhotoToStorage('');
+      print(url);
 
-        firestore.collection('m&a').doc('both').collection('memories').add({
-          'title': 'foto',
-          'description': 'descripción de la foto',
-          'url': url,
-          'date': DateTime.now(),
-          'createdBy': 'martin',
-          'type': 'photo',
-        }).then((value) => Navigator.pop(context));
-      }
+      firestore.collection('m&a').doc('both').collection('memories').add({
+        'title': 'foto',
+        'description': 'descripción de la foto',
+        'url': url,
+        'date': DateTime.now(),
+        'createdBy': 'martin',
+        'type': 'photo',
+      }).then((value) => Navigator.pop(context));
     }
 
     return '';
@@ -159,7 +212,7 @@ class NuevoRecuerdo extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     //guardar en firebase
-                    pickImageFromGallery(context);
+                    pickImage(context);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.3,
