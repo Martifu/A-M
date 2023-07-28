@@ -84,7 +84,6 @@ class NuevoRecuerdo extends StatelessWidget {
     //print which platform is running
     if (kIsWeb) {
       var url = await uploadPhotoToStorage('');
-      print(url);
       firestore.collection('m&a').doc('both').collection('memories').add({
         'title': 'foto',
         'description': 'descripción de la foto',
@@ -97,8 +96,6 @@ class NuevoRecuerdo extends StatelessWidget {
       //do something else
 
       var url = await uploadPhotoToStorage('');
-      print(url);
-
       firestore.collection('m&a').doc('both').collection('memories').add({
         'title': 'foto',
         'description': 'descripción de la foto',

@@ -17,13 +17,6 @@ class HomeScreenProvider extends ChangeNotifier {
     _changeImage1();
     _changeImage2();
     _changeImage3();
-    // // Start the timer to change images every 2 seconds
-    // Timer.periodic(
-    //     const Duration(milliseconds: 4000), (Timer timer) => _changeImage1());
-    // Timer.periodic(
-    //     const Duration(milliseconds: 2000), (Timer timer) => _changeImage2());
-    // Timer.periodic(
-    //     const Duration(milliseconds: 5000), (Timer timer) => _changeImage3());
   }
 
   void _changeImage1() {

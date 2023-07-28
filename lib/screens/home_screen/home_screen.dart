@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:jagvault/constants.dart';
 import 'package:jagvault/models/carta.dart';
@@ -25,7 +26,7 @@ class HomeScreen extends StatelessWidget {
     var size = MediaQuery.of(context)
         .size; //this gonna give us total height and with of our device
 
-    var provider = Provider.of<HomeScreenProvider>(context);
+    // var provider = Provider.of<HomeScreenProvider>(context);
     return SafeArea(
         child: Scaffold(
       drawer: Drawer(
@@ -64,11 +65,7 @@ class HomeScreen extends StatelessWidget {
                 HeroIcons.envelope,
                 color: secondaryColor,
               ),
-              title: const Text('cartas',
-                  style: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'visby')),
+              title: Text('cartas', style: GoogleFonts.manjari()),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                   return const CartasScreen();
@@ -80,11 +77,7 @@ class HomeScreen extends StatelessWidget {
                 HeroIcons.heart,
                 color: secondaryColor,
               ),
-              title: const Text('recuerdos',
-                  style: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'visby')),
+              title: Text('recuerdos', style: GoogleFonts.manjari()),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                   return const RecuerdosScreen();
@@ -96,11 +89,7 @@ class HomeScreen extends StatelessWidget {
                 HeroIcons.users,
                 color: secondaryColor,
               ),
-              title: const Text('cosas por hacer',
-                  style: TextStyle(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'visby')),
+              title: Text('cosas por hacer', style: GoogleFonts.manjari()),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                   return const CartasScreen();
@@ -129,21 +118,24 @@ class HomeScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('buenos días, usuario',
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text('buenos días, usuario',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 30,
                   )),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text(
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
                 //cita del día
                 '“La vida es como una caja de chocolates, nunca sabes lo que te va a tocar”',
                 style: TextStyle(
@@ -152,10 +144,13 @@ class HomeScreen extends StatelessWidget {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                     return const RecuerdosScreen();
@@ -166,129 +161,245 @@ class HomeScreen extends StatelessWidget {
                   opcion: 'ver todos',
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: size.width,
-                height: 250,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 50,
-                      child: Transform(
-                        transform: Matrix4.rotationZ(-0.1),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: AnimatedSwitcher(
-                              duration: const Duration(
-                                  milliseconds:
-                                      500), // Adjust the fade duration as needed
-                              child: Image.network(
-                                provider.currentImageLink3,
-                                key: ValueKey<String>(provider
-                                    .currentImageLink3), // Use a ValueKey to identify different images
-                                fit: BoxFit.cover,
-                                width: size.width * 0.35,
-                                height: 200,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              width: size.width,
+              height: size.height * 0.3,
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('m&a')
+                    .doc('both')
+                    .collection('memories')
+                    .limit(3)
+                    .snapshots(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  var url1 = snapshot.data?.docs[0]['url'];
+                  var url2 = snapshot.data?.docs[1]['url'];
+                  var url3 = snapshot.data?.docs[2]['url'];
+
+                  var title1 = snapshot.data?.docs[0]['title'];
+                  var title2 = snapshot.data?.docs[1]['title'];
+                  var title3 = snapshot.data?.docs[2]['title'];
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('error'),
+                    );
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  return Stack(
+                    children: [
+                      Positioned(
+                        top: 50,
+                        left: -10,
+                        child: Transform(
+                          transform: Matrix4.rotationZ(-0.1),
+                          child: Container(
+                            width: size.width * 0.4,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: primaryColor,
+                                width: 1,
                               ),
-                              transitionBuilder: (child, animation) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: primaryColor.withOpacity(0.15),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(
+                                        milliseconds:
+                                            500), // Adjust the fade duration as needed
+                                    child: Image.network(
+                                      url1,
+                                      key: ValueKey<String>(
+                                          url1), // Use a ValueKey to identify different images
+                                      fit: BoxFit.cover,
+                                      width: size.width * 0.4,
+                                      height: 150,
+                                    ),
+                                    transitionBuilder: (child, animation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  title1,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  style: const TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 35,
-                      right: 0,
-                      child: Transform(
-                        transform: Matrix4.rotationZ(0.1),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: AnimatedSwitcher(
-                              duration: const Duration(
-                                  milliseconds:
-                                      500), // Adjust the fade duration as needed
-                              child: Image.network(
-                                provider.currentImageLink2,
-                                key: ValueKey<String>(provider
-                                    .currentImageLink2), // Use a ValueKey to identify different images
-                                fit: BoxFit.cover,
-                                width: size.width * 0.35,
-                                height: 200,
+                      Positioned(
+                        top: 35,
+                        right: -10,
+                        child: Transform(
+                          transform: Matrix4.rotationZ(0.1),
+                          child: Container(
+                            width: size.width * 0.4,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: primaryColor,
+                                width: 1,
                               ),
-                              transitionBuilder: (child, animation) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: primaryColor.withOpacity(0.15),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(
+                                        milliseconds:
+                                            500), // Adjust the fade duration as needed
+                                    child: Image.network(
+                                      url2,
+                                      key: ValueKey<String>(
+                                          url2), // Use a ValueKey to identify different images
+                                      fit: BoxFit.cover,
+                                      width: size.width * 0.4,
+                                      height: 150,
+                                    ),
+                                    transitionBuilder: (child, animation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  title2,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: primaryColor,
-                            width: 1,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(
-                                milliseconds:
-                                    500), // Adjust the fade duration as needed
-                            child: Image.network(
-                              provider.currentImageLink1,
-                              key: ValueKey<String>(provider
-                                  .currentImageLink1), // Use a ValueKey to identify different images
-                              fit: BoxFit.cover,
-                              width: size.width * 0.35,
-                              height: 200,
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10, top: 20),
+                          child: Container(
+                            width: size.width * 0.5,
+                            height: size.height * 0.3,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: primaryColor,
+                                width: 1,
+                              ),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: primaryColor.withOpacity(0.15),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
                             ),
-                            transitionBuilder: (child, animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(
+                                        milliseconds:
+                                            500), // Adjust the fade duration as needed
+                                    child: Image.network(
+                                      url3,
+                                      key: ValueKey<String>(
+                                          url3), // Use a ValueKey to identify different images
+                                      fit: BoxFit.cover,
+                                      width: size.width * 0.45,
+                                      height: size.height * 0.21,
+                                    ),
+                                    transitionBuilder: (child, animation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
+                                  child: Text(
+                                    title3,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  );
+                },
               ),
-              const SizedBox(
-                height: 40,
-              ),
-              GestureDetector(
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                     return const CartasScreen();
@@ -299,10 +410,13 @@ class HomeScreen extends StatelessWidget {
                   opcion: 'mis cartas',
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              StreamBuilder<QuerySnapshot>(
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('m&a')
                     .doc('martin')
@@ -353,29 +467,32 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: GestureDetector(
                 onTap: () {},
                 child: const TituloWidget(
                   titulo: 'cosas por hacer',
                   opcion: 'ver todas',
                 ),
               ),
-              const SizedBox(
-                height: 10,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: size.width,
+              height: 100,
+              decoration: BoxDecoration(
+                color: secondaryColor.withOpacity(.06),
+                borderRadius: BorderRadius.circular(10),
               ),
-              Container(
-                width: size.width,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: secondaryColor.withOpacity(.06),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
       ),
     ));
@@ -398,12 +515,11 @@ class WidgetCarta extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 5),
         child: ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.only(top: 5),
-            child: Icon(
-              HeroIcons.bookmark,
-              color: pinkColor,
-            ),
+          leading: Image.asset(
+            'assets/img/carta-icon.png',
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
           ),
           title: Text(
             '${carta.title}',
@@ -426,7 +542,7 @@ class WidgetCarta extends StatelessWidget {
 
 formatDate(Timestamp date) {
   DateTime dateTime = date.toDate();
-  return '${dateTime.day} de ${dateTime.month} del ${dateTime.year}';
+  return "${dateTime.day.toString()} de ${meses[dateTime.month - 1]} del ${dateTime.year.toString()}";
 }
 
 class TituloWidget extends StatelessWidget {

@@ -1,5 +1,6 @@
 //themedata for the app
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 TextStyle customTextStyle = const TextStyle(
   fontFamily: 'visby',
@@ -9,28 +10,30 @@ TextStyle customTextStyle = const TextStyle(
 );
 
 const Color primaryColor = Color(0xff12043E);
-const Color secondaryColor = Color(0xff410ED3);
+const Color secondaryColor = Color.fromARGB(147, 66, 14, 211);
 const Color pinkColor = Color(0xffD24F6B);
-const Color backgroundColor = Color(0xffF2EDE6);
+Color? backgroundColor = Colors.grey[50];
 
 ThemeData appTheme() {
   return ThemeData(
-    scaffoldBackgroundColor: const Color(0xffF2EDE6),
+    scaffoldBackgroundColor: Colors.grey[50],
 
     primaryColor: const Color(0xff12043E),
-    textTheme: const TextTheme(
-      displayLarge: TextStyle(
-        fontSize: 72.0,
-        fontWeight: FontWeight.bold,
-      ),
-      titleLarge: TextStyle(
+    textTheme: TextTheme(
+      displayLarge: GoogleFonts.manjari(
         fontSize: 36.0,
-        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.bold,
+        color: const Color(0xff12043E),
       ),
-      bodyMedium: TextStyle(
-        fontSize: 14.0,
-        fontFamily: 'visby',
-        color: Color(0xff12043E),
+      titleLarge: GoogleFonts.manjari(
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+        color: const Color(0xff12043E),
+      ),
+      bodyMedium: GoogleFonts.manjari(
+        fontSize: 16.0,
+        fontWeight: FontWeight.normal,
+        color: const Color(0xff12043E),
       ),
     ),
     //scaffold background color
@@ -41,3 +44,18 @@ ThemeData appTheme() {
     ),
   );
 }
+
+List meses = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+];
